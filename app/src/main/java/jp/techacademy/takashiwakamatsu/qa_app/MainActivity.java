@@ -133,25 +133,24 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // ジャンルを選択していない場合（mGenre == 0）はエラーを表示するだけ
-                if (mGenre == 0) {
-                    Snackbar.make(view, "ジャンルを選択して下さい", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
+            // ジャンルを選択していない場合（mGenre == 0）はエラーを表示するだけ
+            if (mGenre == 0) {
+                Snackbar.make(view, "ジャンルを選択して下さい", Snackbar.LENGTH_LONG).show();
+                return;
+            }
+            // ログイン済みのユーザーを収録する
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                // ログイン済みのユーザーを収録する
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                if (user == null) {
-                    // ログインしていなければログイン画面に遷移させる
-                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(intent);
-                } else {
-                    // ジャンルを渡して質問作成画面を起動する
-                    Intent intent = new Intent(getApplicationContext(), QuestionSendActivity.class);
-                    intent.putExtra("genre", mGenre);
-                    startActivity(intent);
-                }
+            if (user == null) {
+                // ログインしていなければログイン画面に遷移させる
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(intent);
+            } else {
+                // ジャンルを渡して質問作成画面を起動する
+                Intent intent = new Intent(getApplicationContext(), QuestionSendActivity.class);
+                intent.putExtra("genre", mGenre);
+                startActivity(intent);
+            }
 
             }
         });
@@ -202,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 if ( mGenre != 5 ) {
                     mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre));
                 }else {
-                    mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(userID);
+                    mGenreRef = mDatabaseReference.child(Const.UsersPATH).child(userID).child(Const.LikessPATH);
                 }
                 mGenreRef.addChildEventListener(mEventListener);
                 // --- ここまで追加する ---
